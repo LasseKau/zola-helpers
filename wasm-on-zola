@@ -1,0 +1,91 @@
+Zola is a powerful static site generator written in Rust. It allows you to create static websites with a variety of content types. Here are some types of content you can display on a Zola static website:
+
+1. **Markdown Content**: Zola supports Markdown files for creating content like blog posts, documentation, and pages. You can use Markdown files with front matter to specify metadata.
+
+2. **HTML Content**: You can include raw HTML content within your Markdown files or create pure HTML files.
+
+3. **Templates**: Zola uses Tera templates to create reusable layouts and components, making it easy to maintain a consistent look and feel across your site.
+
+4. **Images and Media**: You can include images, videos, and other media files in your site. Zola provides built-in shortcodes for handling media.
+
+5. **CSS and JavaScript**: You can add custom CSS and JavaScript to your site for styling and interactivity. Zola supports SCSS out of the box.
+
+6. **Data Files**: Zola supports JSON, TOML, and YAML data files, which you can use to store structured data that can be accessed within your templates.
+
+7. **WASM (WebAssembly) Builds**: You can include WebAssembly builds on your site. This typically involves serving the `.wasm` file and using JavaScript to load and interact with the WebAssembly module.
+
+### How to Include WebAssembly Builds
+
+To display WebAssembly builds on your Zola site, follow these steps:
+
+1. **Build Your WebAssembly Module**: Ensure your WebAssembly module is built and the necessary JavaScript glue code is available.
+
+2. **Add WASM and JS Files to Static Folder**: Place your `.wasm` and corresponding JavaScript files in the `static` folder of your Zola site. This folder's contents are copied directly to the root of your output directory when the site is built.
+
+3. **Include WASM in Your Template**: Create or edit a template to include the JavaScript that loads and interacts with your WebAssembly module.
+
+### Example
+
+Here's an example directory structure and template for including a WebAssembly module:
+
+**Directory Structure:**
+
+```
+/content
+    /_index.md
+/static
+    /wasm
+        /your_module.wasm
+        /your_module.js
+/templates
+    /index.html
+```
+
+**/static/wasm/your_module.js:**
+```javascript
+// JavaScript to load and initialize the WASM module
+async function initWasm() {
+    const response = await fetch('/wasm/your_module.wasm');
+    const buffer = await response.arrayBuffer();
+    const module = await WebAssembly.instantiate(buffer);
+    const instance = module.instance;
+
+    // Example function call from the WASM module
+    instance.exports.your_exported_function();
+}
+
+initWasm();
+```
+
+**/templates/index.html:**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASM on Zola</title>
+</head>
+<body>
+    <h1>Welcome to Zola with WebAssembly</h1>
+    <script src="/wasm/your_module.js"></script>
+</body>
+</html>
+```
+
+### Steps to Build and Serve the Site
+
+1. **Build the Site**: Run the following command to build your Zola site:
+   ```sh
+   zola build
+   ```
+
+2. **Serve the Site**: Run the following command to serve your Zola site locally:
+   ```sh
+   zola serve
+   ```
+
+Visit `http://127.0.0.1:1111` in your browser to see your site with the WebAssembly module included.
+
+**a.** Would you like to see how to integrate a more complex WebAssembly example?  
+**b.** Need help with customizing Zola templates for your site?
